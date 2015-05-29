@@ -8,12 +8,12 @@ use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
 class Transcoder implements TranscoderInterface
 {
     private static $chain;
-    
+
     /**
      * @var TranscoderInterface[]
      */
     private $transcoders = [];
-    
+
     public function __construct(array $transcoders)
     {
         $this->transcoders = $transcoders;
@@ -31,13 +31,13 @@ class Transcoder implements TranscoderInterface
                 // Ignore as long as the fallback transcoder is all right
             }
         }
-        
+
         throw $e;
     }
 
     /**
      * Create a transcoder
-     * 
+     *
      * @param string $defaultEncoding
      *
      * @return TranscoderInterface
@@ -49,9 +49,9 @@ class Transcoder implements TranscoderInterface
         if (isset(self::$chain[$defaultEncoding])) {
             return self::$chain[$defaultEncoding];
         }
-        
+
         $transcoders = [];
-        
+
         try {
             $transcoders[] = new MbTranscoder($defaultEncoding);
         } catch (ExtensionMissingException $mb) {
@@ -64,7 +64,7 @@ class Transcoder implements TranscoderInterface
             // Neither mbstring nor iconv
             throw $iconv;
         }
-        
+
         self::$chain[$defaultEncoding] = new self($transcoders);
 
         return self::$chain[$defaultEncoding];
