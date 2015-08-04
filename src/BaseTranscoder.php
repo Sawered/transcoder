@@ -7,6 +7,8 @@ use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
 
 abstract class BaseTranscoder
 {
+    private $lastException;
+
     public function removeInvalidUTF8Bytes($str)
     {
         $return = '';
@@ -37,5 +39,15 @@ abstract class BaseTranscoder
             $return .= $match;
         }
         return $return;
+    }
+
+    protected function getLastException()
+    {
+        return $this->lastException;
+    }
+
+    protected function setLastException(Exception $e = null)
+    {
+        $this->lastException = $e;
     }
 }

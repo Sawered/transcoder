@@ -2,10 +2,10 @@
 
 namespace Ddeboer\Transcoder\Exception;
 
-class UndetectableEncodingException extends \RuntimeException
+class UndetectableEncodingException extends StringException
 {
-    public function __construct($string, $error)
+    public function __construct($error)
     {
-        parent::__construct(sprintf('Encoding for %s is undetectable: %s', $string, $error));
+        parent::__construct(sprintf('Encoding  is undetectable: %s', $error));
     }
 }

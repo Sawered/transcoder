@@ -2,9 +2,12 @@
 
 namespace Ddeboer\Transcoder;
 
+use Ddeboer\Transcoder\Exception\StringException;
 use Ddeboer\Transcoder\Exception\ExtensionMissingException;
 use Ddeboer\Transcoder\Exception\IllegalCharacterException;
 use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
+
+use Exception;
 
 class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
 {
@@ -46,21 +49,31 @@ class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
 
     protected function realTranscode($string,$from,$to)
     {
-        set_error_handler(
-            function ($no, $message) use ($string) {
-                if (1 === preg_match('/Wrong charset, conversion (.+) is/', $message, $matches)) {
-                    throw new UnsupportedEncodingException($matches[1], $message);
-                } else {
-                    throw new IllegalCharacterException($string, $message);
-                }
-            },
-            E_NOTICE | E_USER_NOTICE
-        );
+        set_error_handler([$this,'errorHandler'],E_NOTICE | E_USER_NOTICE);
+        $this->setLastException(null);
 
-        // UTF8 to UTF8//IGONRE will generate error
+        // UTF8 to UTF8//IGNORE will generate error
         $result = iconv($from, $to, $string);
         restore_error_handler();
 
+        if($e = $this->getLastException()){
+            if($e instanceOf StringException){
+                $e->setString($string);
+                throw $e;
+            }
+        }
+
         return $result;
+    }
+
+
+    public function errorHandler($no, $message)
+    {
+        if (1 === preg_match('/Wrong charset, conversion (.+) is/', $message, $matches)) {
+            $this->setLastException( new UnsupportedEncodingException($matches[1], $message));
+        } else {
+            $this->setLastException( new IllegalCharacterException($message));
+        }
+        return false; //otherwise you cannot restore previos handler
     }
 }

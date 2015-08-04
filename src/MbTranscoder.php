@@ -2,6 +2,7 @@
 
 namespace Ddeboer\Transcoder;
 
+use Ddeboer\Transcoder\Exception\StringException;
 use Ddeboer\Transcoder\Exception\ExtensionMissingException;
 use Ddeboer\Transcoder\Exception\UndetectableEncodingException;
 use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
@@ -42,13 +43,9 @@ class MbTranscoder extends BaseTranscoder implements TranscoderInterface
         }
 
         if (!$from || 'auto' === $from) {
-            set_error_handler(
-                function ($no, $warning) use ($string) {
-                    throw new UndetectableEncodingException($string, $warning);
-                },
-                E_WARNING
-            );
+            set_error_handler([$this,'errorHandler'],E_WARNING);
         }
+        $this->setLastException(null);
 
 
         if ($to) {
@@ -60,6 +57,13 @@ class MbTranscoder extends BaseTranscoder implements TranscoderInterface
             $to ?: $this->defaultEncoding,
             $from ?: 'auto'
         );
+
+        if($e = $this->getLastException()){
+            if($e instanceOf StringException){
+                $e->setString($string);
+                throw $e;
+            }
+        }
 
         restore_error_handler();
 
@@ -76,5 +80,11 @@ class MbTranscoder extends BaseTranscoder implements TranscoderInterface
     private function isSupported($encoding)
     {
         return isset(self::$encodings[strtolower($encoding)]);
+    }
+
+    public function errorHandler($no, $warning)
+    {
+        $this->setLastException(new UndetectableEncodingException($warning));
+        return false; //otherwise you cannot restore previos handler
     }
 }

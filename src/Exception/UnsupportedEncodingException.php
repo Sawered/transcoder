@@ -2,7 +2,7 @@
 
 namespace Ddeboer\Transcoder\Exception;
 
-class UnsupportedEncodingException extends \RuntimeException
+class UnsupportedEncodingException extends StringException
 {
     public function __construct($encoding, $message = null)
     {
@@ -10,7 +10,7 @@ class UnsupportedEncodingException extends \RuntimeException
         if ($message) {
             $error .= ': ' . $message;
         }
-        
+
         return parent::__construct($error);
     }
 }

@@ -2,14 +2,13 @@
 
 namespace Ddeboer\Transcoder\Exception;
 
-class IllegalCharacterException extends \RuntimeException
+class IllegalCharacterException extends StringException
 {
-    public function __construct($string, $warning)
+    public function __construct($warning)
     {
         parent::__construct(
             sprintf(
-                'String "%s" contains an illegal character: %s',
-                $string,
+                'String (see exception) contains an illegal character: %s',
                 $warning
             )
         );
