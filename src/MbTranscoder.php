@@ -85,6 +85,6 @@ class MbTranscoder extends BaseTranscoder implements TranscoderInterface
     public function errorHandler($no, $warning)
     {
         $this->setLastException(new UndetectableEncodingException($warning));
-        return false; //otherwise you cannot restore previos handler
+        return true; //otherwise you cannot restore previos handler
     }
 }

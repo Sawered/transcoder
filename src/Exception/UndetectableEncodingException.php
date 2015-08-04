@@ -6,6 +6,6 @@ class UndetectableEncodingException extends StringException
 {
     public function __construct($error)
     {
-        parent::__construct(sprintf('Encoding  is undetectable: %s', $error));
+        parent::__construct(sprintf('Encoding is undetectable: %s', $error));
     }
 }

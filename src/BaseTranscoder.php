@@ -4,6 +4,7 @@ namespace Ddeboer\Transcoder;
 
 use Ddeboer\Transcoder\Exception\ExtensionMissingException;
 use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
+use Exception;
 
 abstract class BaseTranscoder
 {

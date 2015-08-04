@@ -7,8 +7,6 @@ use Ddeboer\Transcoder\Exception\ExtensionMissingException;
 use Ddeboer\Transcoder\Exception\IllegalCharacterException;
 use Ddeboer\Transcoder\Exception\UnsupportedEncodingException;
 
-use Exception;
-
 class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
 {
     private $defaultEncoding;
@@ -33,12 +31,10 @@ class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
             return $this->realTranscode($string,$from,$to);
 
         }catch(IllegalCharacterException $e){
-            //var_dump('cleanup',$from,$to);
 
             if(strtolower($from)=='utf-8'
                 && strpos(strtolower($to),'utf-8') === 0
             ){
-                //var_dump('cleanup');
                 $string = $this->removeInvalidUTF8Bytes($string);
                 return $this->realTranscode($string,$from,$to);
             }
@@ -49,7 +45,7 @@ class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
 
     protected function realTranscode($string,$from,$to)
     {
-        set_error_handler([$this,'errorHandler'],E_NOTICE | E_USER_NOTICE);
+        set_error_handler([$this,'errorHandler'], E_NOTICE | E_USER_NOTICE);
         $this->setLastException(null);
 
         // UTF8 to UTF8//IGNORE will generate error
@@ -74,6 +70,6 @@ class IconvTranscoder extends BaseTranscoder implements TranscoderInterface
         } else {
             $this->setLastException( new IllegalCharacterException($message));
         }
-        return false; //otherwise you cannot restore previos handler
+        return true; //otherwise you cannot restore previos handler
     }
 }
