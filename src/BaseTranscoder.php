@@ -10,7 +10,7 @@ abstract class BaseTranscoder
 {
     private $lastException;
 
-    public function removeInvalidUTF8Bytes($str)
+    public static function removeInvalidUTF8Bytes($str)
     {
         $return = '';
         $length = strlen($str);

@@ -5,6 +5,10 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Sergey Koryukin",
+            "email": "sawered@gmail.com"
+        },
+        {
             "name": "David de Boer",
             "email": "david@ddeboer.nl"
         },
